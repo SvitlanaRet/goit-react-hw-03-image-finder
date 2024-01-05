@@ -1,7 +1,9 @@
 import { Component } from 'react';
-import { getItems } from 'api/items';
+import { getItems } from 'Services/items';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Loader } from './Loader/Loader';
+import { Button } from './Button/Button';
+import { Searchbar } from './Searchbar/Searchbar';
 
 export class App extends Component {
   state = {
@@ -24,13 +26,17 @@ export class App extends Component {
     }
   };
 
+  handleClick = () => {};
+
   render() {
     const { hits, isLoading, error } = this.state;
     return (
       <>
+        <Searchbar />
         {error && <h1>{error}</h1>}
         {isLoading && <Loader />}
         <ImageGallery hits={hits} />
+        <Button></Button>
       </>
     );
   }
