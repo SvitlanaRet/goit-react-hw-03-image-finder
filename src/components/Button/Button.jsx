@@ -1,8 +1,8 @@
 import './Button.css';
 
-export const Button = ({ onClick }) => {
+export const Button = ({ handleClick }) => {
   return (
-    <button className="Button" onClick={onClick}>
+    <button className="Button" onClick={handleClick}>
       Load more
     </button>
   );

@@ -9,7 +9,8 @@ export class App extends Component {
   state = {
     isLoading: false,
     error: '',
-    hits: null,
+    hits: [],
+    page: 1,
   };
 
   componentDidMount = () => {
@@ -17,16 +18,25 @@ export class App extends Component {
   };
 
   handleItems = async () => {
+    console.log(this.state.page);
     try {
       this.setState({ isLoading: true });
-      const data = await getItems();
-      this.setState({ hits: data.hits, isLoading: false });
+      const data = await getItems(this.state.page);
+      console.log(data.hits);
+      this.setState({
+        hits: [...this.state.hits, ...data.hits],
+        isLoading: false,
+        page: this.state.page + 1,
+      });
     } catch (error) {
       this.setState({ error: 'Something wrong, try later', isLoading: false });
     }
   };
 
-  handleClick = () => {};
+  handleClick = () => {
+    // console.log(this.state.page);
+    this.handleItems();
+  };
 
   render() {
     const { hits, isLoading, error } = this.state;
@@ -36,7 +46,7 @@ export class App extends Component {
         {error && <h1>{error}</h1>}
         {isLoading && <Loader />}
         <ImageGallery hits={hits} />
-        <Button></Button>
+        <Button handleClick={this.handleClick} />
       </>
     );
   }
