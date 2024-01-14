@@ -4,6 +4,8 @@ import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Loader } from './Loader/Loader';
 import { Button } from './Button/Button';
 import { Searchbar } from './Searchbar/Searchbar';
+import CustomModal from './Modal/Modal';
+import { Notify } from 'notiflix';
 
 export class App extends Component {
   state = {
@@ -11,25 +13,21 @@ export class App extends Component {
     error: '',
     hits: [],
     page: 1,
-    // defaultHits: [],
-    search: 'dog',
+    search: '',
+    modalIsOpen: false,
+    selectedImage: null,
   };
 
-  componentDidMount = () => {
-    // this.handleItems();
-  };
-
-  handleItems = async (key, add) => {
-    // console.log('state', this.state);
-
+  handleItems = async key => {
     try {
       this.setState({ isLoading: true });
       const data = await getItems(this.state.page, key);
-      // console.log('aaaa', this.state.search == key.toLo);
       let hits = [];
       let page = this.state.page;
       if (this.state.search.includes(key.toLocaleLowerCase())) {
         hits = [...this.state.hits, ...data.hits];
+      } else if (data.hits.length === 0) {
+        Notify.warning('Sorry, there is no images on query');
       } else {
         hits = data.hits;
         page = 1;
@@ -43,7 +41,10 @@ export class App extends Component {
       });
       console.log('state', this.state);
     } catch (error) {
-      this.setState({ error: 'Something wrong, try later', isLoading: false });
+      this.setState({
+        error: Notify.failure('Something wrong, try later'),
+        isLoading: false,
+      });
     }
   };
 
@@ -52,18 +53,31 @@ export class App extends Component {
     this.handleItems(searchKey);
   };
 
+  openModal = imageSrc => {
+    this.setState({ modalIsOpen: true, selectedImage: imageSrc });
+  };
+
+  closeModal = () => {
+    this.setState({ modalIsOpen: false, selectedImage: null });
+  };
+
   handleClick = () => {
     this.handleItems(this.state.search);
   };
 
   render() {
-    const { hits, isLoading, error } = this.state;
+    const { hits, isLoading, error, modalIsOpen, selectedImage } = this.state;
     return (
       <>
         <Searchbar onSubmit={this.updateSearch} />
         {error && <h1>{error}</h1>}
         {isLoading && <Loader />}
-        <ImageGallery hits={hits} />
+        <ImageGallery hits={hits} openModal={this.openModal} />
+        <CustomModal
+          isOpen={modalIsOpen}
+          closeModal={this.closeModal}
+          imageSrc={selectedImage}
+        />
         <Button handleClick={this.handleClick} />
       </>
     );

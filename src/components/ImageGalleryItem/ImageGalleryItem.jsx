@@ -1,9 +1,8 @@
 import './ImageGalleryItem.css';
 
-export const ImageGalleryItem = ({ hit }) => {
-  // console.log(hit);
+export const ImageGalleryItem = ({ hit, onClick }) => {
   return (
-    <li className="ImageGalleryItem">
+    <li className="ImageGalleryItem" onClick={onClick}>
       <img className="ImageGalleryItem-image" src={hit.webformatURL} alt="" />
     </li>
   );

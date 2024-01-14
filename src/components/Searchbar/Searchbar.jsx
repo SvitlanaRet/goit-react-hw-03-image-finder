@@ -15,10 +15,6 @@ export class Searchbar extends Component {
       this.props.onSubmit(this.myRef.current.value);
       this.myRef.current.value = '';
     }
-    // e.nativeEvent.preventDefault();
-    // console.log(e);
-    // this.props.onSubmit(this.myRef.current.value);
-    // console.log(this.myRef.current.value);
   };
 
   render() {
